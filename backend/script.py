@@ -65,11 +65,8 @@ def save_to_test_locally(output):
     
     os.chdir('output')
 
-    serialized_json = json.dumps(output, indent=4)
-    
-    with open('news.json', 'a') as out_json:
-        out_json.write(serialized_json)
-
+    with open('news.json', 'a', encoding='utf-8') as out_json:
+        json.dump(output, out_json, ensure_ascii=False)
 
 if __name__ == "__main__":
 
