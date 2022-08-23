@@ -1,4 +1,3 @@
-import datetime
 import json
 from urllib import response
 import requests
@@ -12,60 +11,53 @@ HEADERS = {
     }
 
 
-RSS_FEED = "https://tribune.com.pk/feed/latest"
+RSS_FEED = "https://tribune.com.pk/feed/"
 
 def fetch_rss(url):
     all_news = []
     output_json = {}
-    # {
-    #     date: [
-    #         {},
-    #         {}, 
-    #         {},
-    #     ]
-    # }
+    categories = ['latest', 'world', 'analysis', 'politics', 'health', 'technology']
+    
+    for category in categories:
+        categ_url = url + category
+        try:
+            r = requests.get(categ_url, headers=HEADERS)
 
-    try:
-        r = requests.get(url, headers=HEADERS)
-        soup = BeautifulSoup(r.content, features='xml')
-        
-        news = soup.find_all("item")
-        
-        for n in news:
-            title = n.find('title').text
-            link = n.find('link').text
-            date = n.find('pubDate').text
-            content = n.find('content:encoded').text
-            image = n.find('image')
+            soup = BeautifulSoup(r.content, features='xml')
             
-            article = {
-                'headline' : str(title),
-                'link' : str(link),
-                'date_published' : str(date),
-                'details' : str(html.unescape(content)),
-                'image_url' : str(list(image.children)[1]["src"])
-            }
+            news = soup.find_all("item")
+            
+            for n in news:
+                title = n.find('title').text
+                link = n.find('link').text
+                date = n.find('pubDate').text
+                content = n.find('content:encoded').text
+                image = n.find('image')
+                
+                article = {
+                    'headline' : str(title),
+                    'link' : str(link),
+                    'date_published' : str(date),
+                    'details' : str(html.unescape(content)),
+                    'image_url' : str(list(image.children)[1]["src"])
+                }
 
-            all_news.append(article) 
+                all_news.append(article) 
 
-        current_timestamp = str(datetime.datetime.now())
-
-        output_json[current_timestamp] = all_news
-
-        return output_json
-    except Exception as e: 
-        return e
+            output_json[category] = all_news
 
 
+        except Exception as e: 
+            print(e)
+
+    return output_json
 
 def save_to_test_locally(output):
 
     if 'output' not in os.listdir():
         os.mkdir('output')
-    
-    os.chdir('output')
 
-    with open('news.json', 'a', encoding='utf-8') as out_json:
+    with open('./output/news.json', 'w', encoding='utf-8') as out_json:
         json.dump(output, out_json, ensure_ascii=False)
 
 if __name__ == "__main__":
@@ -76,3 +68,6 @@ if __name__ == "__main__":
         save_to_test_locally(response)
     else:
         print(response)
+
+
+    
