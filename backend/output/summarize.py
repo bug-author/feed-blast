@@ -1,9 +1,5 @@
-import time
-import requests
 import json
-
-
-URL = "https://hf.space/embed/Alifarsi/news_summarizer/+/api/predict/"
+import pickle
 
 
 def read_news():
@@ -13,30 +9,20 @@ def read_news():
     return data
 
 
-def get_summary(article_url):
-    r = requests.post(url=URL,
-                      json={
-                          "data": [
-                              article_url
-                          ]
-                      }
-                      )
-    print(r.json())
-    try:
-        ret = r.json()['data'][0]
-    except:
-        ret = "FAILED"
-
-    return ret
+def read_summaries():
+    with open('bart-large-cnn-generated-summaries.pkl', 'rb') as pkl_in:
+        summaries = pickle.load(pkl_in)
+        return summaries
 
 
-def summarize(data):
+def summarize(data, gen_summaries):
+    i = 0
     for news_list in data.values():
         for news_article in news_list:
             news_url = news_article['link']
-            summary = get_summary(news_url)
-            time.sleep(5)
+            summary = gen_summaries[i]
             news_article['summary'] = summary
+            i += 1
 
     return data
 
@@ -48,5 +34,6 @@ def save_news(news):
 
 if __name__ == '__main__':
     data = read_news()
-    summarized_news = summarize(data)
+    gen_summaries = read_summaries()
+    summarized_news = summarize(data, gen_summaries)
     save_news(summarized_news)
