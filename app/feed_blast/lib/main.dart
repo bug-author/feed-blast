@@ -1,4 +1,5 @@
 import 'package:feed_blast/pages/home.dart';
+import 'package:feed_blast/pages/loading.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +20,10 @@ class MyApp extends StatelessWidget {
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: const Loading(),
+      routes: {
+        '/home': (context) => const Home(),
+      },
     );
   }
 }
