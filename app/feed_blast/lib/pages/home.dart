@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:feed_blast/pages/category_wise_news.dart';
 import 'package:feed_blast/widgets/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,10 +21,23 @@ class _HomeState extends State<Home> {
     "Technology"
   ];
 
+  fetchNewsFromAPI() async {
+    String apiUrl = "https://feed-blast.herokuapp.com/prototype";
+    Response response = await get(Uri.parse(apiUrl));
+    Map news = jsonDecode(response.body);
+    print(news);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchNewsFromAPI();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context, 'FEED BLAST', isTitle: true),
+      appBar: myAppBar(context, 'FEED BLAST'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -58,9 +74,11 @@ class _HomeState extends State<Home> {
                         child: Text(
                           navBarItem[index],
                           style: const TextStyle(
-                              fontSize: 19,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
+                            fontSize: 19,
+                            fontFamily: "Montserrat",
+                            color: Colors.black,
+                            // fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
