@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
-AppBar myAppBar(BuildContext context, String title, {bool isTitle = false}) {
+AppBar myAppBar(BuildContext context, String title) {
   return AppBar(
+    toolbarHeight: 80,
     title: Text(
       title,
-      style: TextStyle(
-        fontFamily: isTitle
-            ? "Meedori Sans"
-            : DefaultTextStyle.of(context).style.fontFamily,
+      style: const TextStyle(
+        fontFamily: "Meedori Sans",
         wordSpacing: 10,
         fontSize: 34,
         color: Colors.black,
-        fontWeight: FontWeight.w100,
+        fontWeight: FontWeight.w600,
       ),
     ),
     centerTitle: true,
