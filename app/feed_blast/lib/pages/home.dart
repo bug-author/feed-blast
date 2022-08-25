@@ -1,7 +1,8 @@
 import 'dart:convert';
-
+import 'package:feed_blast/models/news_mode.dart';
 import 'package:feed_blast/pages/category_wise_news.dart';
 import 'package:feed_blast/widgets/appbar.dart';
+import 'package:feed_blast/widgets/news_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -13,6 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<NewsModel> newsModelList = <NewsModel>[];
+
   List<String> navBarItem = [
     "World",
     "Analysis",
@@ -21,17 +24,30 @@ class _HomeState extends State<Home> {
     "Technology"
   ];
 
-  fetchNewsFromAPI() async {
+  fetchNewsFromAPI(String category) async {
     String apiUrl = "https://feed-blast.herokuapp.com/prototype";
     Response response = await get(Uri.parse(apiUrl));
-    Map news = jsonDecode(response.body);
-    print(news);
+
+    //? https://stackoverflow.com/a/69392743/10934636 bugfix for special characters
+    Map news = jsonDecode(utf8.decode(response.bodyBytes));
+
+    Map categoryElement;
+
+    setState(() {
+      for (categoryElement in news[category]) {
+        NewsModel model = NewsModel();
+
+        model = model.parseMap(categoryElement);
+
+        newsModelList.add(model);
+      }
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchNewsFromAPI();
+    fetchNewsFromAPI("latest");
   }
 
   @override
@@ -44,7 +60,7 @@ class _HomeState extends State<Home> {
             const SizedBox(
               height: 20,
             ),
-            Container(
+            SizedBox(
               height: 50,
               child: ListView.builder(
                 shrinkWrap: true,
@@ -77,7 +93,7 @@ class _HomeState extends State<Home> {
                             fontSize: 19,
                             fontFamily: "Montserrat",
                             color: Colors.black,
-                            // fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -85,7 +101,21 @@ class _HomeState extends State<Home> {
                   );
                 },
               ),
-            )
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            const Text(
+              "Latest",
+              style: TextStyle(
+                fontFamily: "Meedori Sans",
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            NewsListView(newsModelList: newsModelList),
           ],
         ),
       ),
