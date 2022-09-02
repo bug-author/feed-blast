@@ -2,7 +2,7 @@
 
 # Feed Blast 
 
-### A Flutter app that shows latest news with AI-generated summaries using Hugginface transformers 🤗
+### A Flutter app that shows latest news with AI-generated summaries using Huggingface 🤗 transformers
 
 </div>
 
