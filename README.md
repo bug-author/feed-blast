@@ -10,7 +10,7 @@
 
 # Backend
 ## Python
-- Scrapes RSS feed of The Express Tribune https://tribune.com.pk/ (Requests + BeautifulSoup)
+- Scrapes RSS feed of [The Express Tribune](https://tribune.com.pk/)  (Requests + BeautifulSoup)
 - Generates summaries using Huggingface transformers
 - Served on Heroku using FastAPI
 
